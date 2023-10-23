@@ -40,7 +40,7 @@ const createPlayerAI = () => {
       // if (attack(board, [1, 0])) {
       //   shipCoord = [1, 0];
       // }
-      return;
+      return toHit;
     }
     if (!shipDirection) {
       let validSquare = false;
@@ -54,7 +54,7 @@ const createPlayerAI = () => {
       } while (!validSquare);
 
       if (attack(board, toHit)) shipDirection = check;
-      return;
+      return toHit;
     }
     const toHit = [
       shipCoord[0] + shipDirection[0] * direction * steps,
@@ -69,7 +69,7 @@ const createPlayerAI = () => {
       } else {
         shipSunk();
       }
-      return;
+      return toHit;
     }
 
     if (direction === 1) {
@@ -78,7 +78,7 @@ const createPlayerAI = () => {
     } else {
       shipSunk();
     }
-    aiAttack(board);
+    return aiAttack(board);
   };
 
   return { aiAttack };
