@@ -31,14 +31,15 @@ const createPlayerAI = () => {
 
   const aiAttack = (board) => {
     if (!shipCoord) {
-      // const notAttacked = Array.from(board.notAttacked);
-      // const toHit = JSON.parse(
-      //   notAttacked[Math.floor(Math.random() * notAttacked.length)],
-      // );
-      // if (attack(board, toHit)) shipCoord = toHit;
-      if (attack(board, [1, 0])) {
-        shipCoord = [1, 0];
-      }
+      const notAttacked = Array.from(board.notAttacked);
+      const toHit = JSON.parse(
+        notAttacked[Math.floor(Math.random() * notAttacked.length)],
+      );
+      if (attack(board, toHit)) shipCoord = toHit;
+      // TEST
+      // if (attack(board, [1, 0])) {
+      //   shipCoord = [1, 0];
+      // }
       return;
     }
     if (!shipDirection) {
