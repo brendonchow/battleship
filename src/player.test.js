@@ -3,12 +3,21 @@ import { createPlayer, createPlayerAI } from "./player";
 
 const player = createPlayer();
 const gameBoard = createGameBoard();
+gameBoard.placeShip(1, [0, 0]);
 
 test("Test player sends receiveAttack to gameBoard", () => {
   player.attack(gameBoard, [0, 0]);
 
   expect(gameBoard.notAttacked.has(`[${0},${0}]`)).toBe(false);
   expect(gameBoard.checkAllShipsSunk()).toBe(true);
+});
+
+const playerAI = createPlayerAI();
+const gameBoardAI = createGameBoard();
+
+test("Test aiAttack sends message", () => {
+  playerAI.aiAttack(gameBoardAI);
+  expect(gameBoardAI.notAttacked.size).toBe(99);
 });
 
 // const player2 = createPlayerAI();
