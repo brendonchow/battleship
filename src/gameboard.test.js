@@ -1,6 +1,6 @@
 import createGameBoard from "./gameboard";
 
-const gameBoard = createGameBoard();
+const gameBoard = createGameBoard(10);
 const attacks = new Set();
 
 test("Test placeShip on valid square", () => {
@@ -32,7 +32,10 @@ test("Test hit but ship not sunk", () => {
   expect(gameBoard.checkAllShipsSunk()).toBe(false);
   expect(isHit).toBe(true);
   attacks.add(JSON.stringify([0, 1]));
+
   expect(gameBoard.attacks).toEqual(attacks);
+  expect(gameBoard.notAttacked.has(JSON.stringify([0, 1]))).toBe(false);
+  expect(gameBoard.notAttacked.has(JSON.stringify([9, 0]))).toBe(true);
 });
 
 test("Test missed attack", () => {
@@ -41,6 +44,7 @@ test("Test missed attack", () => {
   expect(isHit).toBe(false);
   attacks.add(JSON.stringify([0, 2]));
   expect(gameBoard.attacks).toEqual(attacks);
+  expect(gameBoard.notAttacked.has(JSON.stringify([0, 2]))).toBe(false);
 });
 
 test("Test one ship sunk but not all", () => {

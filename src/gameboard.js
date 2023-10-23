@@ -1,8 +1,20 @@
 import createShip from "./ship";
 
-const createGameBoard = () => {
+const createGameBoard = (size) => {
   const shipsCoordinates = {};
   const attacks = new Set();
+
+  const initializeNotAttacked = () => {
+    const notAttacked = new Set();
+    for (let i = 0; i < size; i += 1) {
+      for (let j = 0; j < size; j += 1) {
+        notAttacked.add(`[${i},${j}]`);
+      }
+    }
+    return notAttacked;
+  };
+
+  const notAttacked = initializeNotAttacked();
 
   const checkValidShipPlacement = (coords) =>
     coords.every((pos) => {
@@ -41,7 +53,10 @@ const createGameBoard = () => {
   const receiveAttack = (pos) => {
     const posStringify = JSON.stringify(pos);
     const ship = shipsCoordinates[posStringify];
+
     attacks.add(posStringify);
+    notAttacked.delete(posStringify);
+
     if (ship) {
       ship.hit();
       delete shipsCoordinates[posStringify];
@@ -58,6 +73,9 @@ const createGameBoard = () => {
     checkAllShipsSunk,
     get attacks() {
       return attacks;
+    },
+    get notAttacked() {
+      return notAttacked;
     },
   };
 };
