@@ -2,35 +2,64 @@ import createShip from "./ship";
 
 const createGameBoard = () => {
   const shipsCoordinates = {};
-  const missedAttacks = new Set();
+  const attacks = new Set();
 
-  // pos will be a string "xy"
+  const checkValidShipPlacement = (coords) =>
+    coords.every((pos) => {
+      const [x, y] = JSON.parse(pos);
+      if (x > 9 || x < 0 || y > 9 || y < 0) return false;
+      for (let i = x - 1; i <= x + 1; i += 1) {
+        for (let j = y - 1; j <= y + 1; j += 1) {
+          if (shipsCoordinates[JSON.stringify([i, j])]) return false;
+        }
+      }
+      return true;
+    });
+
+  // pos will be a JSON.stringified [x, y]
   const placeShip = (length, pos1, pos2) => {
-    const ship = createShip(length);
-    shipsCoordinates[pos1] = ship;
-    if (!pos2) return;
+    const coords = [JSON.stringify(pos1)];
 
-    const [x1, y1] = pos1.split("").map((item) => parseInt(item, 10));
-    const [x2, y2] = pos2.split("").map((item) => parseInt(item, 10));
-    const [dx, dy] = [x2 - x1, y2 - y1];
-    for (let i = 1; i < length; i += 1) {
-      shipsCoordinates[`${x1 + dx * i}${y1 + dy * i}`] = ship;
+    if (pos2) {
+      const [x1, y1] = pos1;
+      const [x2, y2] = pos2;
+      const [dx, dy] = [x2 - x1, y2 - y1];
+      for (let i = 1; i < length; i += 1) {
+        coords.push(JSON.stringify([x1 + dx * i, y1 + dy * i]));
+      }
     }
+
+    if (!checkValidShipPlacement(coords)) return false;
+
+    const ship = createShip(length);
+    coords.forEach((pos) => {
+      shipsCoordinates[pos] = ship;
+    });
+    return true;
   };
 
   const receiveAttack = (pos) => {
-    const ship = shipsCoordinates[pos];
+    const posStringify = JSON.stringify(pos);
+    const ship = shipsCoordinates[posStringify];
+    attacks.add(posStringify);
     if (ship) {
       ship.hit();
-      delete shipsCoordinates[pos];
-    } else {
-      missedAttacks.add(pos);
+      delete shipsCoordinates[posStringify];
+      return true;
     }
+    return false;
   };
 
   const checkAllShipsSunk = () => Object.keys(shipsCoordinates).length === 0;
 
-  return { placeShip, receiveAttack, checkAllShipsSunk };
+  return {
+    placeShip,
+    receiveAttack,
+    checkAllShipsSunk,
+    get attacks() {
+      return attacks;
+    },
+  };
 };
 
 export default createGameBoard;
