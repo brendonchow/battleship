@@ -1,7 +1,11 @@
 import createGameBoard from "./gameboard";
 
-const gameBoard = createGameBoard(10);
+const gameBoard = createGameBoard();
 const attacks = new Set();
+
+test("checkAllShipSunk initial", () => {
+  expect(gameBoard.checkAllShipsSunk()).toBe(true);
+});
 
 test("Test placeShip on valid square", () => {
   let isPlaced = gameBoard.placeShip(2, [0, 0], [0, 1]);
@@ -24,6 +28,8 @@ test("placeShip on square where ship will go out of bounds", () => {
   let isPlaced = gameBoard.placeShip(2, [9, 0], [10, 0]);
   expect(isPlaced).toBe(false);
   isPlaced = gameBoard.placeShip(2, [0, 9], [0, 10]);
+  expect(isPlaced).toBe(false);
+  isPlaced = gameBoard.placeShip(1, [10, 0]);
   expect(isPlaced).toBe(false);
 });
 

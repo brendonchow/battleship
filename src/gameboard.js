@@ -1,10 +1,10 @@
 import createShip from "./ship";
 
-const createGameBoard = (size) => {
+const createGameBoard = () => {
   const shipsCoordinates = {};
   const attacks = new Set();
 
-  const initializeNotAttacked = () => {
+  const initializeNotAttacked = (size = 10) => {
     const notAttacked = new Set();
     for (let i = 0; i < size; i += 1) {
       for (let j = 0; j < size; j += 1) {
