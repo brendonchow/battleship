@@ -1,6 +1,10 @@
+:root {
+  font-size: 1vw;
+}
+
 html {
   box-sizing: border-box;
-  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+  font-family: Roboto, system-ui, "Segoe UI", Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
@@ -16,4 +20,41 @@ html {
 h1 {
   /* To override Normalize.css h1 margin */
   margin: 0;
+}
+
+body {
+  display: grid;
+  grid-template-rows: 1fr;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 5rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.boards {
+  padding: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  column-gap: 2.5rem;
+  row-gap: 50px;
+  align-items: center;
+}
+
+.board1,
+.board2 {
+  aspect-ratio: 1;
+  outline: 2px solid black;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
+}
+
+.square {
+  outline: 1px solid black;
+  aspect-ratio: 1;
 }
