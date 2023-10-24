@@ -28,12 +28,6 @@ body {
   height: 100vh;
 }
 
-h1 {
-  font-size: 5rem;
-  padding: 2rem;
-  text-align: center;
-}
-
 .boards {
   padding: 2.5rem;
   display: grid;
@@ -44,7 +38,8 @@ h1 {
 }
 
 .board1,
-.board2 {
+.board2,
+.dialog-board {
   aspect-ratio: 1;
   outline: 2px solid black;
 }
@@ -57,4 +52,25 @@ h1 {
 .square {
   outline: 1px solid black;
   aspect-ratio: 1;
+}
+
+dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  gap: 25px;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.rotate {
+  background-color: black;
+  color: white;
+  padding: 10px 25px;
+  font-size: 20px;
+  justify-self: center;
+  border-radius: 5px;
 }
