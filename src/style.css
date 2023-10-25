@@ -66,7 +66,7 @@ dialog[open] {
   border-radius: 10px;
 }
 
-.rotate {
+.rotate, .play-again {
   background-color: black;
   color: white;
   padding: 10px 25px;
@@ -74,6 +74,14 @@ dialog[open] {
   justify-self: center;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.winner {
+  font-size: 32px;
+}
+
+.play-again {
+  font-size: 24px;
 }
 
 .rotate:hover {
@@ -87,4 +95,12 @@ dialog[open] {
 
 .dialog-board .square {
   cursor: pointer;
+}
+
+.hit {
+  background-color: red;
+}
+
+.miss {
+  background-color: green;
 }

@@ -29,6 +29,13 @@ const createPlayerAI = () => {
     ];
   };
 
+  const validateSquare = (toHit, board) =>
+    toHit[0] <= 9 &&
+    toHit[0] >= 0 &&
+    toHit[1] <= 9 &&
+    toHit[1] >= 0 &&
+    board.notAttacked.has(JSON.stringify(toHit));
+
   const aiAttack = (board) => {
     if (!shipCoord) {
       const notAttacked = Array.from(board.notAttacked);
@@ -49,9 +56,12 @@ const createPlayerAI = () => {
       do {
         check = possible.pop();
         toHit = [shipCoord[0] + check[0], shipCoord[1] + check[1]];
-        if (toHit[0] <= 9 && toHit[0] >= 0 && toHit[1] <= 9 && toHit[1] >= 0)
-          validSquare = true;
-      } while (!validSquare);
+        validSquare = validateSquare(toHit, board);
+      } while (!validSquare && possible.length !== 0);
+      if (!validSquare) {
+        shipSunk();
+        return aiAttack(board);
+      }
 
       if (attack(board, toHit)) shipDirection = check;
       return toHit;
@@ -61,7 +71,7 @@ const createPlayerAI = () => {
       shipCoord[1] + shipDirection[1] * direction * steps,
     ];
 
-    if (toHit[0] <= 9 && toHit[0] >= 0 && toHit[1] <= 9 && toHit[1] >= 0) {
+    if (validateSquare(toHit, board)) {
       if (attack(board, toHit)) steps += 1;
       else if (direction === 1) {
         direction = -1;

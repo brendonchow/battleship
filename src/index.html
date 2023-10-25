@@ -12,7 +12,7 @@
     />
   </head>
   <body>
-    <dialog>
+    <dialog class="initialize">
       <h1>Welcome to the battleship game!</h1>
       <h2>Place your <span class="ship-name">Carrier</span></h2>
       <button class="rotate" type="button">Rotate</button>
@@ -138,6 +138,10 @@
           <div class="square"></div>
         </div>
       </div>
+    </dialog>
+    <dialog class="game-over">
+      <h1 class="winner"></h1>
+      <button class="play-again">Play Again</button>
     </dialog>
     <main class="boards">
       <div class="board1">

@@ -1,8 +1,17 @@
 import "normalize.css";
 import "./style.css";
-import { placeInitialShips } from "./game";
+import {
+  placeInitialShips,
+  placeShipsAI,
+  attackPlayer2,
+  attackPlayer1,
+  getPlayer1NotAttacked,
+  isPlayer1Winner,
+  isPlayer2Winner,
+  restartGame,
+} from "./game";
 
-const dialog = document.querySelector("dialog");
+const initialize = document.querySelector(".initialize");
 const dialogSquares = Array.from(
   document.querySelectorAll(".dialog-board .square"),
 );
@@ -11,12 +20,13 @@ const player2Squares = Array.from(document.querySelectorAll(".board2 .square"));
 const rotateButton = document.querySelector(".rotate");
 const shipName = document.querySelector(".ship-name");
 
-dialog.showModal();
+const gameOverModal = document.querySelector(".game-over");
+const winner = document.querySelector(".winner");
+const playAgainButton = document.querySelector(".play-again");
 
 let direction = [0, 1];
-let count = 0;
-const shipLengths = [2, 3, 3, 4, 5];
-const shipNames = ["Patrol Boat", "Submarine", "Destroyer", "Battleship"];
+let shipLengths = [2, 3, 3, 4, 5];
+let shipNames = ["Patrol Boat", "Submarine", "Destroyer", "Battleship"];
 let highlighted = [];
 
 const mouseOverSquare = (coord) => {
@@ -35,14 +45,6 @@ const mouseOverSquare = (coord) => {
   }
 };
 
-const placeShipAI = () => {
-  const shipLength = [2, 3, 3, 4, 5];
-  shipLength.forEach((length) => {
-    const randomX = Math.random() * 10;
-    const randomY = Math.random() * 10;
-  });
-};
-
 const clickDialogSquare = (coord) => {
   if (
     placeInitialShips(shipLengths[shipLengths.length - 1], coord, [
@@ -56,7 +58,8 @@ const clickDialogSquare = (coord) => {
     });
     shipLengths.pop();
     if (shipLengths.length === 0) {
-      dialog.close();
+      initialize.close();
+      placeShipsAI();
       return;
     }
     const name = shipNames.pop();
@@ -64,15 +67,75 @@ const clickDialogSquare = (coord) => {
   }
 };
 
-dialogSquares.forEach((square) => {
-  const coord = [Math.floor(count / 10), count % 10];
+dialogSquares.forEach((square, index) => {
+  const coord = [Math.floor(index / 10), index % 10];
 
   square.addEventListener("mouseover", () => mouseOverSquare(coord));
   square.addEventListener("click", () => clickDialogSquare(coord));
-  count += 1;
 });
 
 rotateButton.addEventListener("click", () => {
   if (direction[0] === 0) direction = [1, 0];
   else direction = [0, 1];
 });
+
+const displayWinner = (message) => {
+  winner.textContent = message;
+  gameOverModal.showModal();
+};
+
+player2Squares.forEach((square, index) =>
+  square.addEventListener("click", () => {
+    // Stop player from hitting same square
+    const coord = [Math.floor(index / 10), index % 10];
+    if (!getPlayer1NotAttacked().has(JSON.stringify(coord))) return;
+
+    if (attackPlayer2(coord)) {
+      square.classList.add("hit");
+    } else if (!square.classList.contains("hit")) square.classList.add("miss");
+    // Check if all ships destroyed on player 2 board
+    if (isPlayer1Winner()) {
+      displayWinner("You won!");
+      return;
+    }
+
+    const coordHit = attackPlayer1();
+    const squareHit = player1Squares[coordHit[0] * 10 + coordHit[1]];
+    if (squareHit.classList.contains("highlight")) {
+      squareHit.classList.remove("highlight");
+      squareHit.classList.add("hit");
+    } else {
+      squareHit.classList.add("miss");
+    }
+    // Check if all ships destroyed on player 1 board
+    if (isPlayer2Winner()) {
+      displayWinner("You lost!");
+    }
+  }),
+);
+
+const clearSquare = (square) => {
+  square.classList.remove("temp-highlight");
+  square.classList.remove("highlight");
+  square.classList.remove("hit");
+  square.classList.remove("miss");
+};
+
+playAgainButton.addEventListener("click", () => {
+  gameOverModal.close();
+  dialogSquares.forEach((square, index) => {
+    clearSquare(square);
+    clearSquare(player1Squares[index]);
+    clearSquare(player2Squares[index]);
+  });
+
+  restartGame();
+  direction = [0, 1];
+  shipLengths = [2, 3, 3, 4, 5];
+  shipNames = ["Patrol Boat", "Submarine", "Destroyer", "Battleship"];
+  highlighted = [];
+
+  initialize.showModal();
+});
+
+initialize.showModal();
