@@ -84,33 +84,37 @@ const displayWinner = (message) => {
   gameOverModal.showModal();
 };
 
+const aiAttack = () => {
+  const coordHit = attackPlayer1();
+  const squareHit = player1Squares[coordHit[0] * 10 + coordHit[1]];
+  if (squareHit.classList.contains("highlight")) {
+    squareHit.classList.remove("highlight");
+    squareHit.classList.add("hit");
+  } else {
+    squareHit.classList.add("miss");
+  }
+  if (isPlayer2Winner()) {
+    displayWinner("You lost!");
+  }
+};
+
+const playerAttack = (square, coord) => {
+  if (attackPlayer2(coord)) {
+    square.classList.add("hit");
+  } else if (!square.classList.contains("hit")) square.classList.add("miss");
+
+  if (isPlayer1Winner()) {
+    displayWinner("You won!");
+  }
+};
+
 player2Squares.forEach((square, index) =>
   square.addEventListener("click", () => {
-    // Stop player from hitting same square
     const coord = [Math.floor(index / 10), index % 10];
     if (!getPlayer1NotAttacked().has(JSON.stringify(coord))) return;
-
-    if (attackPlayer2(coord)) {
-      square.classList.add("hit");
-    } else if (!square.classList.contains("hit")) square.classList.add("miss");
-    // Check if all ships destroyed on player 2 board
-    if (isPlayer1Winner()) {
-      displayWinner("You won!");
-      return;
-    }
-
-    const coordHit = attackPlayer1();
-    const squareHit = player1Squares[coordHit[0] * 10 + coordHit[1]];
-    if (squareHit.classList.contains("highlight")) {
-      squareHit.classList.remove("highlight");
-      squareHit.classList.add("hit");
-    } else {
-      squareHit.classList.add("miss");
-    }
-    // Check if all ships destroyed on player 1 board
-    if (isPlayer2Winner()) {
-      displayWinner("You lost!");
-    }
+    playerAttack(square, coord);
+    
+    aiAttack();
   }),
 );
 

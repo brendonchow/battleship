@@ -15,6 +15,9 @@ const createPlayerAI = () => {
     [0, -1],
     [-1, 0],
   ];
+  let shipLength = 0;
+  const shipsLength = [0, 0, 1, 2, 1, 1];
+
   const { attack } = createPlayer();
   const shipSunk = () => {
     shipCoord = null;
@@ -27,6 +30,8 @@ const createPlayerAI = () => {
       [0, -1],
       [-1, 0],
     ];
+    shipsLength[shipLength] -= 1;
+    shipLength = 0;
   };
 
   const validateSquare = (toHit, board) =>
@@ -36,13 +41,23 @@ const createPlayerAI = () => {
     toHit[1] >= 0 &&
     board.notAttacked.has(JSON.stringify(toHit));
 
+  const checkForLargerShips = () => {
+    for (let i = shipsLength.length - 1; i >= 0; i -= 1) {
+      if (shipLength === i) shipSunk();
+      if (shipsLength[i] > 0) return;
+    }
+  };
+
   const aiAttack = (board) => {
     if (!shipCoord) {
       const notAttacked = Array.from(board.notAttacked);
       const toHit = JSON.parse(
         notAttacked[Math.floor(Math.random() * notAttacked.length)],
       );
-      if (attack(board, toHit)) shipCoord = toHit;
+      if (attack(board, toHit)) {
+        shipCoord = toHit;
+        shipLength += 1;
+      }
       // TEST
       // if (attack(board, [1, 0])) {
       //   shipCoord = [1, 0];
@@ -63,7 +78,11 @@ const createPlayerAI = () => {
         return aiAttack(board);
       }
 
-      if (attack(board, toHit)) shipDirection = check;
+      if (attack(board, toHit)) {
+        shipDirection = check;
+        shipLength += 1;
+      }
+
       return toHit;
     }
     const toHit = [
@@ -72,8 +91,11 @@ const createPlayerAI = () => {
     ];
 
     if (validateSquare(toHit, board)) {
-      if (attack(board, toHit)) steps += 1;
-      else if (direction === 1) {
+      if (attack(board, toHit)) {
+        steps += 1;
+        shipLength += 1;
+        checkForLargerShips();
+      } else if (direction === 1) {
         direction = -1;
         steps = 1;
       } else {
