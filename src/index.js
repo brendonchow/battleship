@@ -105,15 +105,17 @@ const playerAttack = (square, coord) => {
 
   if (isPlayer1Winner()) {
     displayWinner("You won!");
+    return true;
   }
+  return false;
 };
 
 player2Squares.forEach((square, index) =>
   square.addEventListener("click", () => {
     const coord = [Math.floor(index / 10), index % 10];
     if (!getPlayer1NotAttacked().has(JSON.stringify(coord))) return;
-    playerAttack(square, coord);
-    
+    if (playerAttack(square, coord)) return;
+
     aiAttack();
   }),
 );
