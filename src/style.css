@@ -40,8 +40,7 @@ body {
 .board1,
 .board2,
 .dialog-board {
-  aspect-ratio: 1;
-  outline: 2px solid black;
+  border: 1px solid black;
 }
 
 .row {
@@ -50,7 +49,7 @@ body {
 }
 
 .square {
-  outline: 1px solid black;
+  border: 1px solid black;
   aspect-ratio: 1;
 }
 
@@ -66,7 +65,8 @@ dialog[open] {
   border-radius: 10px;
 }
 
-.rotate, .play-again {
+.rotate,
+.play-again {
   background-color: black;
   color: white;
   padding: 10px 25px;
@@ -103,4 +103,14 @@ dialog[open] {
 
 .miss {
   background-color: green;
+}
+
+.right,
+.left {
+  display: grid;
+  gap: 10px;
+}
+
+.board-title {
+  text-align: center;
 }
