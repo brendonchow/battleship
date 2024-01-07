@@ -53,6 +53,10 @@ body {
   aspect-ratio: 1;
 }
 
+.board2 .square:not(.miss, .hit) {
+  cursor: pointer;
+}
+
 dialog[open] {
   position: absolute;
   top: 50%;
@@ -93,7 +97,7 @@ dialog[open] {
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-.dialog-board .square {
+.dialog-board .square:not(.highlight) {
   cursor: pointer;
 }
 
